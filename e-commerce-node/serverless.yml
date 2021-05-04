@@ -1,0 +1,102 @@
+service: e-commerce-node
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  profile: andres
+  region: ${opt:region, 'us-east-1'}
+  lambdaHashingVersion: 20201221
+  environment:
+    TABLE_NAME: !Ref EcommerceTable
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:GetItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:Query"
+            - "dynamodb:UpdateItem"
+          Resource:
+            - !GetAtt EcommerceTable.Arn
+            - !Sub ${EcommerceTable.Arn}/index/GSI1
+
+functions:
+  createCustomer:
+    handler: functions/createCustomer.handler
+    events:
+      - http:
+          path: customers
+          method: POST
+  getCustomer:
+    handler: functions/getCustomer.handler
+    events:
+      - http:
+          path: customers/{username}
+          method: GET
+  editAddressForCustomer:
+    handler: functions/editAddressForCustomer.handler
+    events:
+      - http:
+          path: customers/{username}/addresses
+          method: POST
+  deleteAddressForCustomer:
+    handler: functions/deleteAddressForCustomer.handler
+    events:
+      - http:
+          path: customers/{username}/addresses/{name}
+          method: DELETE
+  createOrder:
+    handler: functions/createOrder.handler
+    events:
+      - http:
+          path: customers/{username}/orders
+          method: POST
+  updateStatusForOrder:
+    handler: functions/updateStatusForOrder.handler
+    events:
+      - http:
+          path: customers/{username}/orders/{orderId}/status
+          method: POST
+  getOrdersForCustomer:
+    handler: functions/getOrdersForCustomer.handler
+    events:
+      - http:
+          path: customers/{username}/orders
+          method: GET
+  getOrder:
+    handler: functions/getOrder.handler
+    events:
+      - http:
+          path: customers/{username}/orders/{orderId}
+          method: GET
+
+resources:
+  Resources:
+    EcommerceTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: GSI1PK
+            AttributeType: S
+          - AttributeName: GSI1SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        BillingMode: "PAY_PER_REQUEST"
+        GlobalSecondaryIndexes:
+          - IndexName: GSI1
+            KeySchema:
+              - AttributeName: GSI1PK
+                KeyType: HASH
+              - AttributeName: GSI1SK
+                KeyType: RANGE
+            Projection:
+                ProjectionType: ALL
