@@ -1,0 +1,37 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  getRepo(ownerName: String!, repoName: String!): Repo!
+}
+
+type Mutation {
+  createRepo(input: RepoInput!): Repo!
+}
+
+input RepoInput {
+  ownerName: String!
+  repoName: String!
+  issueAndPullRequestCount: Int!
+  starCount: Int!
+  forkCount: Int!
+}
+
+type Repo {
+  GSI1PK: ID!
+  GSI1SK: ID!
+  GSI2PK: ID!
+  GSI2SK: ID!
+  GSI3PK: ID!
+  GSI3SK: ID!
+  Type: String!
+  OwnerName: String!
+  RepoName: String!
+  IssueAndPullRequestCount: Int!
+  StarCount: Int!
+  ForkCount: Int!
+  CreatedAt: AWSDateTime!
+  UpdatedAt: AWSDateTime!
+}

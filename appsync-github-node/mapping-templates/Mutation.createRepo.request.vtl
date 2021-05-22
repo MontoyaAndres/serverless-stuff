@@ -1,0 +1,31 @@
+#set($ownerName = $context.arguments.input.ownerName.toLowerCase())
+#set($repoName = $context.arguments.input.repoName.toLowerCase())
+#set($currentTime = $util.time.nowISO8601())
+
+{
+  "version": "2018-05-29",
+  "operation": "PutItem",
+  "key": {
+    "PK": $utils.dynamodb.toDynamoDBJson("REPO#${ownerName}#${repoName}"),
+    "SK": $utils.dynamodb.toDynamoDBJson("REPO#${ownerName}#${repoName}")
+  },
+  "attributeValues": {
+    "GSI1PK": $utils.dynamodb.toDynamoDBJson("REPO#${ownerName}#${repoName}"),
+    "GSI1SK": $utils.dynamodb.toDynamoDBJson("REPO#${ownerName}#${repoName}"),
+    "GSI2PK": $utils.dynamodb.toDynamoDBJson("REPO#${ownerName}#${repoName}"),
+    "GSI2SK": $utils.dynamodb.toDynamoDBJson("#REPO#${ownerName}#${repoName}"),
+    "GSI3PK": $utils.dynamodb.toDynamoDBJson("ACCOUNT#${ownerName}"),
+    "GSI3SK": $utils.dynamodb.toDynamoDBJson("ACCOUNT#${currentTime}"),
+    "Type": $utils.dynamodb.toDynamoDBJson("Repo"),
+    "OwnerName": $utils.dynamodb.toDynamoDBJson($ownerName),
+    "RepoName": $utils.dynamodb.toDynamoDBJson($repoName),
+    "IssueAndPullRequestCount": $utils.dynamodb.toDynamoDBJson($context.arguments.input.issueAndPullRequestCount),
+    "StarCount": $utils.dynamodb.toDynamoDBJson($context.arguments.input.starCount),
+    "ForkCount": $utils.dynamodb.toDynamoDBJson($context.arguments.input.forkCount),
+    "CreatedAt": $utils.dynamodb.toDynamoDBJson($currentTime),
+    "UpdatedAt": $utils.dynamodb.toDynamoDBJson($currentTime)
+  },
+  "condition": {
+    "expression": "attribute_not_exists(PK)"
+  }
+}
