@@ -1,0 +1,20 @@
+#set($shouldScanIndexForward = true)
+
+#if($context.arguments.sortDirection == "DESC")
+  #set($shouldScanIndexForward = false)
+#end
+
+{
+  "version": "2018-05-29",
+  "operation": "Query",
+  "index": "byRoomId",
+  "query": {
+    "expression": "roomId = :roomId",
+    "expressionValues": {
+      ":roomId": $utils.dynamodb.toDynamoDBJson($context.arguments.roomId)
+    }
+  },
+  "scanIndexForward": $shouldScanIndexForward,
+  "limit": $utils.toJson($context.arguments.limit),
+  "nextToken": $utils.toJson($context.arguments.nextToken),
+}

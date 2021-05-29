@@ -1,0 +1,37 @@
+name: appsyncrealtimechat
+schema: schema.graphql
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig:
+  awsRegion: us-east-1
+  defaultAction: ALLOW
+  userPoolId: !Ref CognitoUserPool
+mappingTemplatesLocation: mapping-templates
+mappingTemplates:
+  - type: Query
+    field: listMessagesForRoom
+    dataSource: messageTable
+  - type: Query
+    field: listRooms
+    dataSource: roomTable
+  - type: Query
+    field: getRoom
+    dataSource: roomTable
+  - type: Mutation
+    field: createMessage
+    dataSource: messageTable
+  - type: Mutation
+    field: createRoom
+    dataSource: roomTable
+  - type: Room
+    field: message
+    dataSource: messageTable
+
+dataSources:
+  - type: AMAZON_DYNAMODB
+    name: messageTable
+    config:
+      tableName: !Ref MessageTable
+  - type: AMAZON_DYNAMODB
+    name: roomTable
+    config:
+      tableName: !Ref RoomTable
