@@ -1,0 +1,22 @@
+{
+  "name": "AUTH-APPSYNC-TEST",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^2.48.0",
+    "serverless-appsync-plugin": "^1.11.3",
+    "serverless-iam-roles-per-function": "^3.2.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.19.0",
+    "@aws-sdk/client-dynamodb": "^3.19.0",
+    "@aws-sdk/util-dynamodb": "^3.19.0"
+  }
+}

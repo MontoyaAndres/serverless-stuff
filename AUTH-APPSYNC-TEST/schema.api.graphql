@@ -1,0 +1,25 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  getUser(id: ID!): User!
+}
+
+type Mutation {
+  createUser(input: UserInput): Boolean @aws_auth(cognito_groups: ["Admin"])
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: AWSEmail!
+  permissions: [String!]!
+}
+
+input UserInput {
+  name: String!
+  email: AWSEmail!
+  permissions: [String!]!
+}

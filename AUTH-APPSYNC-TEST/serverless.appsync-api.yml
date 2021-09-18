@@ -1,0 +1,28 @@
+name: authtestbackend
+schema: schema.api.graphql
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig:
+  awsRegion: us-east-1
+  defaultAction: ALLOW
+  userPoolId: !Ref CognitoUserPool
+mappingTemplatesLocation: mapping-templates
+mappingTemplates:
+  - type: Query
+    field: getUser
+    dataSource: usersTable
+  
+  - type: Mutation
+    field: createUser
+    dataSource: createUserFunction
+    request: false
+    response: false
+
+dataSources:
+  - type: AMAZON_DYNAMODB
+    name: usersTable
+    config:
+      tableName: !Ref UsersTable
+  - type: AWS_LAMBDA
+    name: createUserFunction
+    config:
+      functionName: createUser
